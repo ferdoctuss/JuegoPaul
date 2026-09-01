@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" href="icono3.png">
     <link rel="shortcut icon" href="icono3.png">
     
-    <title>Cuenta Frutas</title>
+    <title>Frutas</title>
     <style>
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
@@ -50,7 +50,6 @@
             margin-top: 35px;
         }
         
-        /* Texto de pregunta más grande y con más espacio alrededor */
         #question-text {
             font-size: 2.8rem;
             color: #0984e3;
@@ -255,7 +254,7 @@
                 margin-top: 45px;  
             }
             #question-text {
-                font-size: 2.1rem; /* Adaptado para que luzca grande pero sin desbordar en celulares */
+                font-size: 2.1rem;
                 margin: 20px 0;
             }
             .frutas-pocas { font-size: 3.3rem; }
@@ -489,10 +488,10 @@
                     }
                 }, 2200); 
             } else {
-                messageDiv.textContent = "¡Casi, prueba otro! 💪";
+                messageDiv.textContent = "¡No! ❌";
                 messageDiv.style.color = "#ff7675";
                 messageDiv.className = "animacion-error";
-                hablar("¡Intenta de nuevo!");
+                hablar("No");
             }
         }
 
