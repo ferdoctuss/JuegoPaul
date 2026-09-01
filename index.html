@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" href="icono3.png">
     <link rel="shortcut icon" href="icono3.png">
     
-    <title>Frutas</title>
+    <title>Juego de Contar Frutas para Paul</title>
     <style>
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
@@ -350,9 +350,13 @@
         function hablar(texto) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                let utterance = new SpeechSynthesisUtterance(texto);
+                
+                // Limpiamos los signos de interrogación y emojis para que Android lea fluido "cuántas manzanas a i" o similar
+                let textoLimpio = texto.replace(/[¿?¡!🤔]/g, '');
+
+                let utterance = new SpeechSynthesisUtterance(textoLimpio);
                 utterance.lang = 'es-ES';
-                utterance.rate = 0.9;
+                utterance.rate = 0.85; // Un poquito más pausado para que Android vocalice mejor cada palabra
                 window.speechSynthesis.speak(utterance);
             }
         }
