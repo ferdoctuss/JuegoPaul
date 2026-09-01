@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" href="icono3.png">
     <link rel="shortcut icon" href="icono3.png">
     
-    <title>Juego de Contar Frutas para Paul</title>
+    <title>Cuenta Frutas</title>
     <style>
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
@@ -36,7 +36,7 @@
             transition: all 0.1s;
             font-weight: bold;
             touch-action: manipulation;
-            display: none; /* Oculto hasta que empiece el juego */
+            display: none;
         }
         #btn-config:active {
             transform: translateY(4px);
@@ -45,16 +45,19 @@
 
         h1 {
             color: #ff6b6b;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-            margin-top: 40px;
-        }
-        #question-text {
             font-size: 2.2rem;
+            margin-bottom: 0px;
+            margin-top: 35px;
+        }
+        
+        /* Texto de pregunta más grande y con más espacio alrededor */
+        #question-text {
+            font-size: 2.8rem;
             color: #0984e3;
-            margin: 15px 0;
+            margin: 25px 0;
             font-weight: bold;
             cursor: pointer;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         #apples-container {
@@ -108,7 +111,6 @@
             opacity: 0;
         }
 
-        /* Pantalla de Inicio / Botón de Iniciar */
         #pantalla-inicio {
             display: flex;
             flex-direction: column;
@@ -143,12 +145,10 @@
             font-size: 5rem;
         }
 
-        /* Contenedor del juego principal (oculto al inicio) */
         #juego-container {
             display: none;
         }
 
-        /* Estilos de la barra de progreso en la parte inferior */
         .progress-wrapper {
             width: 85%;
             max-width: 450px;
@@ -251,12 +251,12 @@
         @media (max-width: 600px) {
             body { padding: 10px; }
             h1 {
-                font-size: 1.6rem; 
-                margin-top: 50px;  
+                font-size: 1.5rem; 
+                margin-top: 45px;  
             }
             #question-text {
-                font-size: 1.5rem;
-                margin: 8px 0;
+                font-size: 2.1rem; /* Adaptado para que luzca grande pero sin desbordar en celulares */
+                margin: 20px 0;
             }
             .frutas-pocas { font-size: 3.3rem; }
             .frutas-medias { font-size: 2.6rem; }
@@ -275,14 +275,12 @@
 </head>
 <body>
 
-    <!-- Pantalla de Inicio -->
     <div id="pantalla-inicio">
         <div class="intro-icono">🍎🎮</div>
         <div class="intro-titulo">¡A Contar Frutas!</div>
         <button id="btn-iniciar" onclick="empezarJuego()">¡Iniciar Juego!</button>
     </div>
 
-    <!-- Contenedor del Juego (Oculto al inicio) -->
     <div id="juego-container">
         <button id="btn-config" onclick="abrirSelector()">⚙️</button>
 
@@ -365,7 +363,6 @@
         }
 
         function empezarJuego() {
-            // Oculta la pantalla de inicio, muestra el juego y desbloquea el audio de inmediato
             document.getElementById('pantalla-inicio').style.display = 'none';
             document.getElementById('juego-container').style.display = 'block';
             document.getElementById('btn-config').style.display = 'block';
@@ -412,7 +409,6 @@
             questionText.textContent = frutaData.pregunta + " 🤔";
             ultimaPreguntaTexto = frutaData.pregunta;
             
-            // Como ya se presionó el botón "Iniciar", el audio funcionará perfectamente aquí
             hablar(frutaData.pregunta);
 
             let min, max, dificultadText;
