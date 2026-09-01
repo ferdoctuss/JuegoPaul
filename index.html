@@ -3,30 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Contar Manzanas</title>
+    <title>Juego de Contar Frutas</title>
     <style>
-        /* Estilos amigables y coloridos para niños */
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
             text-align: center;
             background-color: #e0f7fa;
             margin: 0;
-            padding: 30px;
-            user-select: none; /* Evita que el texto se seleccione por accidente */
+            padding: 20px;
+            user-select: none;
         }
         h1 {
             color: #ff6b6b;
-            font-size: 3rem;
-            margin-bottom: 10px;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        .question-text {
+            font-size: 2.2rem;
+            color: #0984e3;
+            margin: 15px 0;
+            font-weight: bold;
         }
         #apples-container {
-            font-size: 5rem; /* Manzanas grandes */
-            margin: 30px 0;
+            font-size: 4rem;
+            margin: 20px auto;
+            max-width: 600px;
             min-height: 120px;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .options {
             display: flex;
@@ -37,7 +43,7 @@
         button {
             font-size: 3rem;
             font-weight: bold;
-            padding: 20px 40px;
+            padding: 15px 35px;
             border: none;
             border-radius: 20px;
             background-color: #4ecdc4;
@@ -57,7 +63,7 @@
         }
         #message {
             font-size: 2rem;
-            margin-top: 30px;
+            margin-top: 20px;
             font-weight: bold;
             min-height: 45px;
         }
@@ -66,14 +72,32 @@
 <body>
 
     <h1 id="level-title">Nivel 1</h1>
+    <div class="question-text">¿Cuántas frutas hay? 🤔</div>
     <div id="apples-container"></div>
     <div class="options" id="options-container"></div>
     <div id="message"></div>
 
     <script>
         let currentLevel = 1;
-        const maxLevels = 3;
+        const maxLevels = 100;
+
+        // Lista de 10 frutas diferentes
+        const frutas = ["🍎", "🍌", "🍊", "🍉", "🍓", "🍇", "🍐", "🍍", "🍒", "🍑"];
+
+        // Generamos 100 niveles de forma fluida (subiendo despacio para que no se estrese)
+        const configuracionNiveles = [];
+        let cantidadActual = 1;
+        
+        for (let i = 1; i <= maxLevels; i++) {
+            // Cada 3 o 4 niveles subimos de número para que sea amigable
+            if (i > 1 && i % 3 === 0 && cantidadActual < 30) {
+                cantidadActual++;
+            }
+            configuracionNiveles.push({ min: cantidadActual, max: cantidadActual });
+        }
+
         let expectedNumber = 0;
+        let frutaActual = "🍎";
 
         function initGame() {
             currentLevel = 1;
@@ -89,33 +113,39 @@
             messageDiv.textContent = "";
             title.textContent = `Nivel ${currentLevel}`;
 
-            // Determinar cuántas manzanas mostrar según el nivel
-            let min = 1, max = 3;
-            if (currentLevel === 2) { min = 4; max = 6; }
-            else if (currentLevel === 3) { min = 7; max = 10; }
+            // Seleccionar fruta rotando según el nivel (del 0 al 9)
+            frutaActual = frutas[(currentLevel - 1) % frutas.length];
 
-            expectedNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            const configActual = configuracionNiveles[currentLevel - 1];
+            expectedNumber = configActual.min; // Como el min y max son iguales, el número exacto está controlado
 
-            // Dibujar las manzanas en pantalla
+            // Dibujar las frutas ajustando tamaño si hay muchas
             applesDiv.innerHTML = "";
-            for (let i = 0; i < expectedNumber; i++) {
-                applesDiv.innerHTML += "<span>🍎</span>";
+            if (expectedNumber > 20) {
+                applesDiv.style.fontSize = "2.5rem";
+            } else if (expectedNumber > 10) {
+                applesDiv.style.fontSize = "3.2rem";
+            } else {
+                applesDiv.style.fontSize = "4.5rem";
             }
 
-            // Crear las opciones de respuesta (1 correcta, 2 incorrectas)
+            for (let i = 0; i < expectedNumber; i++) {
+                applesDiv.innerHTML += `<span>${frutaActual}</span>`;
+            }
+
+            // Crear las opciones (1 correcta, 2 incorrectas cercanas)
             let options = [expectedNumber];
             while (options.length < 3) {
-                // Genera una respuesta falsa entre 1 y 12
-                let randomWrong = Math.floor(Math.random() * 12) + 1;
-                if (!options.includes(randomWrong)) {
+                let variacion = Math.floor(Math.random() * 5) - 2; // -2 a +2
+                let randomWrong = expectedNumber + variacion;
+                
+                if (randomWrong > 0 && randomWrong <= 30 && !options.includes(randomWrong)) {
                     options.push(randomWrong);
                 }
             }
 
-            // Desordenar los botones para que la respuesta correcta no siempre esté en el mismo lugar
             options.sort(() => Math.random() - 0.5);
 
-            // Generar los botones HTML
             optionsDiv.innerHTML = "";
             options.forEach(num => {
                 const btn = document.createElement('button');
@@ -131,13 +161,10 @@
             const buttons = Array.from(optionsDiv.children);
 
             if (selectedNumber === expectedNumber) {
-                messageDiv.textContent = "¡Muy bien! 🎉";
+                messageDiv.textContent = "¡Excelente! 🎉";
                 messageDiv.style.color = "#1dd1a1";
-                
-                // Deshabilitar botones para evitar que siga haciendo clic
                 buttons.forEach(btn => btn.disabled = true);
                 
-                // Esperar 1.5 segundos antes de pasar al siguiente nivel
                 setTimeout(() => {
                     currentLevel++;
                     if (currentLevel > maxLevels) {
@@ -145,32 +172,34 @@
                     } else {
                         playLevel();
                     }
-                }, 1500);
+                }, 1200);
             } else {
-                messageDiv.textContent = "¡Intenta de nuevo! 💪";
+                messageDiv.textContent = "¡Casi, prueba otro! 💪";
                 messageDiv.style.color = "#ff7675";
             }
         }
 
         function endGame() {
-            document.getElementById('level-title').textContent = "¡Ganaste!";
-            document.getElementById('apples-container').innerHTML = "🏆🥳✨";
+            document.getElementById('level-title').textContent = "¡Lo lograste!";
+            document.querySelector('.question-text').textContent = "¡Completaste los 100 niveles!";
+            document.getElementById('apples-container').innerHTML = "🏆👑🥳✨";
             document.getElementById('options-container').innerHTML = "";
             
             const messageDiv = document.getElementById('message');
-            messageDiv.textContent = "¡Excelente trabajo contando!";
+            messageDiv.textContent = "¡Eres un campeón contando!";
             messageDiv.style.color = "#ff9f43";
             
-            // Botón para volver a empezar
             const restartBtn = document.createElement('button');
-            restartBtn.textContent = "Jugar otra vez";
+            restartBtn.textContent = "Jugar de nuevo";
             restartBtn.style.backgroundColor = "#0984e3";
             restartBtn.style.boxShadow = "0 6px 0 #005f9e";
-            restartBtn.onclick = initGame;
+            restartBtn.onclick = () => {
+                document.querySelector('.question-text').textContent = "¿Cuántas frutas hay? 🤔";
+                initGame();
+            };
             document.getElementById('options-container').appendChild(restartBtn);
         }
 
-        // Arrancar el juego por primera vez
         initGame();
     </script>
 </body>
