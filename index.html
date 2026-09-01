@@ -213,9 +213,9 @@
         <div class="modal-content">
             <h3>Elige la dificultad</h3>
             <div class="modal-botones-vertical">
-                <button class="btn-facil" onclick="seleccionarDificultad(1)">Fácil 😊 (1-10)</button>
-                <button class="btn-medio" onclick="seleccionarDificultad(31)">Medio 😐 (10-15)</button>
-                <button class="btn-dificil" onclick="seleccionarDificultad(61)">Difícil 🥵 (15-20)</button>
+                <button class="btn-facil" onclick="seleccionarDificultad(1)">Fácil 😊 (1-30)</button>
+                <button class="btn-medio" onclick="seleccionarDificultad(31)">Medio 😐 (31-60)</button>
+                <button class="btn-dificil" onclick="seleccionarDificultad(61)">Difícil 🥵 (60-100)</button>
             </div>
             <button class="btn-cancelar" onclick="cerrarSelector()">Cancelar</button>
         </div>
@@ -305,13 +305,13 @@
             let min, max, dificultadText;
             if (currentLevel <= 30) {
                 min = 1; max = 10;
-                dificultadText = "Fácil (1-30) 😊";
+                dificultadText = "Fácil 😊";
             } else if (currentLevel <= 60) {
                 min = 10; max = 15;
-                dificultadText = "Medio (31-60) 😐";
+                dificultadText = "Medio 😐";
             } else {
                 min = 15; max = 20;
-                dificultadText = "Difícil (61-100) 🥵";
+                dificultadText = "Difícil 🥵";
             }
 
             title.textContent = `Nivel ${currentLevel} (${dificultadText})`;
