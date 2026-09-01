@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Contar Frutas</title>
+    <title>Juego de Contar Frutas para Paul</title>
     <style>
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
@@ -62,10 +62,24 @@
             cursor: not-allowed;
         }
         #message {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-top: 20px;
             font-weight: bold;
-            min-height: 45px;
+            min-height: 55px;
+            opacity: 0; /* Oculto por defecto */
+        }
+        
+        /* Animación para el mensaje de éxito */
+        @keyframes reboteMagico {
+            0% { transform: scale(0.1); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animacion-exito {
+            animation: reboteMagico 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .animacion-error {
+            opacity: 1 !important;
         }
     </style>
 </head>
@@ -80,24 +94,10 @@
     <script>
         let currentLevel = 1;
         const maxLevels = 100;
-
-        // Lista de 10 frutas diferentes
         const frutas = ["🍎", "🍌", "🍊", "🍉", "🍓", "🍇", "🍐", "🍍", "🍒", "🍑"];
 
-        // Generamos 100 niveles de forma fluida (subiendo despacio para que no se estrese)
-        const configuracionNiveles = [];
-        let cantidadActual = 1;
-        
-        for (let i = 1; i <= maxLevels; i++) {
-            // Cada 3 o 4 niveles subimos de número para que sea amigable
-            if (i > 1 && i % 3 === 0 && cantidadActual < 30) {
-                cantidadActual++;
-            }
-            configuracionNiveles.push({ min: cantidadActual, max: cantidadActual });
-        }
-
         let expectedNumber = 0;
-        let frutaActual = "🍎";
+        let lastNumber = 0; // Para evitar que se repita el mismo número dos veces seguidas
 
         function initGame() {
             currentLevel = 1;
@@ -110,16 +110,21 @@
             const optionsDiv = document.getElementById('options-container');
             const messageDiv = document.getElementById('message');
 
+            // Reiniciar el mensaje y quitar la animación
+            messageDiv.className = "";
             messageDiv.textContent = "";
             title.textContent = `Nivel ${currentLevel}`;
 
-            // Seleccionar fruta rotando según el nivel (del 0 al 9)
-            frutaActual = frutas[(currentLevel - 1) % frutas.length];
+            // Seleccionar fruta rotando para asegurar que vea las 10
+            let frutaActual = frutas[(currentLevel - 1) % frutas.length];
 
-            const configActual = configuracionNiveles[currentLevel - 1];
-            expectedNumber = configActual.min; // Como el min y max son iguales, el número exacto está controlado
+            // Generar un número aleatorio entre 1 y 30 que no sea igual al del nivel anterior
+            do {
+                expectedNumber = Math.floor(Math.random() * 30) + 1;
+            } while (expectedNumber === lastNumber);
+            lastNumber = expectedNumber;
 
-            // Dibujar las frutas ajustando tamaño si hay muchas
+            // Dibujar las frutas ajustando tamaño si son demasiadas
             applesDiv.innerHTML = "";
             if (expectedNumber > 20) {
                 applesDiv.style.fontSize = "2.5rem";
@@ -133,17 +138,19 @@
                 applesDiv.innerHTML += `<span>${frutaActual}</span>`;
             }
 
-            // Crear las opciones (1 correcta, 2 incorrectas cercanas)
+            // Crear las alternativas (1 correcta, 2 incorrectas cercanas)
             let options = [expectedNumber];
             while (options.length < 3) {
-                let variacion = Math.floor(Math.random() * 5) - 2; // -2 a +2
+                let variacion = Math.floor(Math.random() * 7) - 3; // Variación entre -3 y +3
                 let randomWrong = expectedNumber + variacion;
                 
+                // Asegurarse de que las opciones falsas estén entre 1 y 30
                 if (randomWrong > 0 && randomWrong <= 30 && !options.includes(randomWrong)) {
                     options.push(randomWrong);
                 }
             }
 
+            // Desordenar los botones
             options.sort(() => Math.random() - 0.5);
 
             optionsDiv.innerHTML = "";
@@ -161,8 +168,11 @@
             const buttons = Array.from(optionsDiv.children);
 
             if (selectedNumber === expectedNumber) {
-                messageDiv.textContent = "¡Excelente! 🎉";
+                // Activar animación y mensaje para Paul
+                messageDiv.textContent = "¡Muy bien Paul! 🎉🚀";
                 messageDiv.style.color = "#1dd1a1";
+                messageDiv.className = "animacion-exito";
+                
                 buttons.forEach(btn => btn.disabled = true);
                 
                 setTimeout(() => {
@@ -172,10 +182,11 @@
                     } else {
                         playLevel();
                     }
-                }, 1200);
+                }, 1800); // Le damos un poquito más de tiempo (1.8s) para que disfrute su nombre animado
             } else {
                 messageDiv.textContent = "¡Casi, prueba otro! 💪";
                 messageDiv.style.color = "#ff7675";
+                messageDiv.className = "animacion-error";
             }
         }
 
@@ -186,8 +197,9 @@
             document.getElementById('options-container').innerHTML = "";
             
             const messageDiv = document.getElementById('message');
-            messageDiv.textContent = "¡Eres un campeón contando!";
+            messageDiv.textContent = "¡Eres un campeón contando, Paul!";
             messageDiv.style.color = "#ff9f43";
+            messageDiv.className = "animacion-exito";
             
             const restartBtn = document.createElement('button');
             restartBtn.textContent = "Jugar de nuevo";
