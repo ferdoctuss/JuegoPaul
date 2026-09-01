@@ -65,36 +65,6 @@
         .frutas-medias { font-size: 3.8rem; }
         .frutas-muchas { font-size: 3.2rem; }
 
-        /* Estilos de la barra de progreso divertida */
-        .progress-wrapper {
-            width: 85%;
-            max-width: 450px;
-            margin: 15px auto;
-            text-align: center;
-        }
-        #progress-text {
-            font-size: 1.1rem;
-            color: #0984e3;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        #progress-container {
-            width: 100%;
-            background-color: #dfe6e9;
-            border-radius: 20px;
-            height: 22px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
-            border: 3px solid #b2bec3;
-        }
-        #progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #00b894, #00cec9);
-            border-radius: 15px;
-            transition: width 0.5s ease;
-        }
-
         .options {
             display: flex;
             justify-content: center;
@@ -130,6 +100,36 @@
             font-weight: bold;
             min-height: 55px;
             opacity: 0;
+        }
+
+        /* Estilos de la barra de progreso en la parte inferior */
+        .progress-wrapper {
+            width: 85%;
+            max-width: 450px;
+            margin: 25px auto 10px auto;
+            text-align: center;
+        }
+        #progress-text {
+            font-size: 1.1rem;
+            color: #0984e3;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #progress-container {
+            width: 100%;
+            background-color: #dfe6e9;
+            border-radius: 20px;
+            height: 22px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
+            border: 3px solid #b2bec3;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00b894, #00cec9);
+            border-radius: 15px;
+            transition: width 0.5s ease;
         }
         
         @keyframes reboteMagico {
@@ -235,16 +235,16 @@
     
     <div id="apples-container"></div>
 
-    <!-- Barra de progreso agregada -->
+    <div class="options" id="options-container"></div>
+    <div id="message"></div>
+
+    <!-- Barra de progreso movida al final -->
     <div class="progress-wrapper">
         <div id="progress-text">Progreso: Nivel 1 de 100</div>
         <div id="progress-container">
             <div id="progress-bar"></div>
         </div>
     </div>
-
-    <div class="options" id="options-container"></div>
-    <div id="message"></div>
 
     <div id="modal-niveles">
         <div class="modal-content">
@@ -334,7 +334,6 @@
             messageDiv.className = "";
             messageDiv.textContent = "";
 
-            // Actualizar barra de progreso
             let porcentaje = (currentLevel / maxLevels) * 100;
             progressBar.style.width = porcentaje + "%";
             progressText.textContent = `Progreso: Nivel ${currentLevel} de ${maxLevels}`;
