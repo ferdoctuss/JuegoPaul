@@ -254,13 +254,12 @@
         let expectedNumber = 0;
         let lastNumber = 0; 
 
-        // Función para reproducir voz automática
         function hablar(texto) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Detiene cualquier audio anterior
+                window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(texto);
-                utterance.lang = 'es-ES'; // Idioma español
-                utterance.rate = 0.9;     // Un poco más pausado para que los niños entiendan bien
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -297,8 +296,6 @@
             let frutaData = frutas[(currentLevel - 1) % frutas.length];
             
             questionText.textContent = frutaData.pregunta + " 🤔";
-            
-            // ¡Aquí hace que el teléfono hable la pregunta automáticamente!
             hablar(frutaData.pregunta);
 
             let min, max, dificultadText;
@@ -362,11 +359,12 @@
             const buttons = Array.from(optionsDiv.children);
 
             if (selectedNumber === expectedNumber) {
-                messageDiv.textContent = "¡Muy bien Paul! 🎉🚀";
+                messageDiv.textContent = `¡Muy bien Paul! 🎉🚀`;
                 messageDiv.style.color = "#1dd1a1";
                 messageDiv.className = "animacion-exito";
                 
-                hablar("¡Muy bien Paul!"); // ¡También habla cuando acierta!
+                // AQUÍ SE UNE EL NÚMERO Y EL MENSAJE: Ej. "9, muy bien Paul"
+                hablar(`${selectedNumber}, muy bien Paul`);
 
                 buttons.forEach(btn => btn.disabled = true);
                 
@@ -377,7 +375,7 @@
                     } else {
                         playLevel();
                     }
-                }, 1800); 
+                }, 2200); // 2.2 segundos para darle tiempo a que termine de hablar completo
             } else {
                 messageDiv.textContent = "¡Casi, prueba otro! 💪";
                 messageDiv.style.color = "#ff7675";
