@@ -66,10 +66,9 @@
             margin-top: 20px;
             font-weight: bold;
             min-height: 55px;
-            opacity: 0; /* Oculto por defecto */
+            opacity: 0;
         }
         
-        /* Animación para el mensaje de éxito */
         @keyframes reboteMagico {
             0% { transform: scale(0.1); opacity: 0; }
             60% { transform: scale(1.2); opacity: 1; }
@@ -97,7 +96,7 @@
         const frutas = ["🍎", "🍌", "🍊", "🍉", "🍓", "🍇", "🍐", "🍍", "🍒", "🍑"];
 
         let expectedNumber = 0;
-        let lastNumber = 0; // Para evitar que se repita el mismo número dos veces seguidas
+        let lastNumber = 0; 
 
         function initGame() {
             currentLevel = 1;
@@ -110,21 +109,35 @@
             const optionsDiv = document.getElementById('options-container');
             const messageDiv = document.getElementById('message');
 
-            // Reiniciar el mensaje y quitar la animación
             messageDiv.className = "";
             messageDiv.textContent = "";
             title.textContent = `Nivel ${currentLevel}`;
 
-            // Seleccionar fruta rotando para asegurar que vea las 10
+            // Seleccionar fruta rotando
             let frutaActual = frutas[(currentLevel - 1) % frutas.length];
 
-            // Generar un número aleatorio entre 1 y 30 que no sea igual al del nivel anterior
+            // Determinar el rango según el nivel en el que se encuentra Paul
+            let min, max;
+            if (currentLevel <= 5) {
+                min = 1; max = 5;
+            } else if (currentLevel <= 10) {
+                min = 5; max = 10;
+            } else if (currentLevel <= 15) {
+                min = 10; max = 15;
+            } else if (currentLevel <= 20) {
+                min = 15; max = 20;
+            } else if (currentLevel <= 25) {
+                min = 20; max = 25;
+            } else {
+                min = 25; max = 30; // Del nivel 26 al 100 se mantiene aquí
+            }
+
+            // Generar el número aleatorio dentro del rango, evitando repetir el anterior
             do {
-                expectedNumber = Math.floor(Math.random() * 30) + 1;
-            } while (expectedNumber === lastNumber);
+                expectedNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            } while (expectedNumber === lastNumber && (max - min) > 0); 
             lastNumber = expectedNumber;
 
-            // Dibujar las frutas ajustando tamaño si son demasiadas
             applesDiv.innerHTML = "";
             if (expectedNumber > 20) {
                 applesDiv.style.fontSize = "2.5rem";
@@ -138,19 +151,17 @@
                 applesDiv.innerHTML += `<span>${frutaActual}</span>`;
             }
 
-            // Crear las alternativas (1 correcta, 2 incorrectas cercanas)
             let options = [expectedNumber];
             while (options.length < 3) {
-                let variacion = Math.floor(Math.random() * 7) - 3; // Variación entre -3 y +3
+                // Las alternativas falsas ahora respetan un poco el límite de 1 a 30
+                let variacion = Math.floor(Math.random() * 7) - 3; 
                 let randomWrong = expectedNumber + variacion;
                 
-                // Asegurarse de que las opciones falsas estén entre 1 y 30
                 if (randomWrong > 0 && randomWrong <= 30 && !options.includes(randomWrong)) {
                     options.push(randomWrong);
                 }
             }
 
-            // Desordenar los botones
             options.sort(() => Math.random() - 0.5);
 
             optionsDiv.innerHTML = "";
@@ -168,7 +179,6 @@
             const buttons = Array.from(optionsDiv.children);
 
             if (selectedNumber === expectedNumber) {
-                // Activar animación y mensaje para Paul
                 messageDiv.textContent = "¡Muy bien Paul! 🎉🚀";
                 messageDiv.style.color = "#1dd1a1";
                 messageDiv.className = "animacion-exito";
@@ -182,7 +192,7 @@
                     } else {
                         playLevel();
                     }
-                }, 1800); // Le damos un poquito más de tiempo (1.8s) para que disfrute su nombre animado
+                }, 1800); 
             } else {
                 messageDiv.textContent = "¡Casi, prueba otro! 💪";
                 messageDiv.style.color = "#ff7675";
