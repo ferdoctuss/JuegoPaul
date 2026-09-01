@@ -15,7 +15,6 @@
             position: relative;
         }
         
-        /* Botón de configuración pequeño y discreto */
         #btn-config {
             position: absolute;
             top: 15px;
@@ -40,7 +39,7 @@
             color: #ff6b6b;
             font-size: 2.5rem;
             margin-bottom: 5px;
-            margin-top: 40px; /* Espacio para que no choque con el botón */
+            margin-top: 40px;
         }
         .question-text {
             font-size: 2.2rem;
@@ -105,9 +104,9 @@
             opacity: 1 !important;
         }
 
-        /* Estilos de la ventana modal (Selector de niveles) */
+        /* Estilos actualizados de la ventana modal */
         #modal-niveles {
-            display: none; /* Oculto por defecto */
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6);
@@ -121,39 +120,52 @@
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            max-width: 300px;
+            max-width: 320px;
+            width: 90%;
         }
         .modal-content h3 {
             margin-top: 0;
             color: #2d3436;
-            font-size: 1.5rem;
-        }
-        .modal-content input {
-            font-size: 1.5rem;
-            width: 80px;
-            text-align: center;
-            padding: 5px;
-            border: 2px solid #0984e3;
-            border-radius: 10px;
+            font-size: 1.8rem;
             margin-bottom: 20px;
         }
-        .modal-botones {
+        .modal-botones-vertical {
             display: flex;
-            justify-content: space-between;
-            gap: 10px;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        .modal-botones button {
+        .modal-botones-vertical button {
+            font-size: 1.4rem;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: all 0.1s;
+        }
+        .btn-facil { background-color: #1dd1a1; box-shadow: 0 5px 0 #10ac84; }
+        .btn-medio { background-color: #feca57; box-shadow: 0 5px 0 #ff9f43; color: #2d3436 !important; }
+        .btn-dificil { background-color: #ff6b6b; box-shadow: 0 5px 0 #ee5253; }
+        
+        .modal-botones-vertical button:active { 
+            transform: translateY(5px); 
+            box-shadow: 0 0 0; 
+        }
+
+        .btn-cancelar { 
+            background-color: #b2bec3; 
+            box-shadow: 0 4px 0 #636e72; 
             font-size: 1.2rem;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
             color: white;
         }
-        .btn-ir { background-color: #0984e3; box-shadow: 0 4px 0 #005f9e; }
-        .btn-cancelar { background-color: #d63031; box-shadow: 0 4px 0 #b33939; }
-        .modal-botones button:active { transform: translateY(4px); box-shadow: 0 0 0; }
+        .btn-cancelar:active { transform: translateY(4px); box-shadow: 0 0 0; }
     </style>
 </head>
 <body>
@@ -166,15 +178,16 @@
     <div class="options" id="options-container"></div>
     <div id="message"></div>
 
+    <!-- Nueva Ventana Modal con los 3 botones de dificultad -->
     <div id="modal-niveles">
         <div class="modal-content">
-            <h3>Ir a un nivel</h3>
-            <p>Escribe un número del 1 al 100:</p>
-            <input type="number" id="input-nivel" min="1" max="100" value="1">
-            <div class="modal-botones">
-                <button class="btn-cancelar" onclick="cerrarSelector()">Cancelar</button>
-                <button class="btn-ir" onclick="saltarANivel()">¡Ir!</button>
+            <h3>Elige la dificultad</h3>
+            <div class="modal-botones-vertical">
+                <button class="btn-facil" onclick="seleccionarDificultad(1)">Fácil 😊 (1-10)</button>
+                <button class="btn-medio" onclick="seleccionarDificultad(31)">Medio 😐 (10-15)</button>
+                <button class="btn-dificil" onclick="seleccionarDificultad(61)">Difícil 🥵 (15-20)</button>
             </div>
+            <button class="btn-cancelar" onclick="cerrarSelector()">Cancelar</button>
         </div>
     </div>
 
@@ -186,28 +199,20 @@
         let expectedNumber = 0;
         let lastNumber = 0; 
 
-        // Funciones del Selector de Niveles
         function abrirSelector() {
             document.getElementById('modal-niveles').style.display = 'flex';
-            document.getElementById('input-nivel').value = currentLevel;
         }
 
         function cerrarSelector() {
             document.getElementById('modal-niveles').style.display = 'none';
         }
 
-        function saltarANivel() {
-            let nivelDeseado = parseInt(document.getElementById('input-nivel').value);
-            if (nivelDeseado >= 1 && nivelDeseado <= 100) {
-                currentLevel = nivelDeseado;
-                cerrarSelector();
-                playLevel();
-            } else {
-                alert("Por favor, ingresa un número entre 1 y 100.");
-            }
+        function seleccionarDificultad(nivelInicio) {
+            currentLevel = nivelInicio;
+            cerrarSelector();
+            playLevel();
         }
 
-        // Lógica principal del juego
         function initGame() {
             currentLevel = 1;
             playLevel();
@@ -222,10 +227,8 @@
             messageDiv.className = "";
             messageDiv.textContent = "";
 
-            // Seleccionar fruta rotando
             let frutaActual = frutas[(currentLevel - 1) % frutas.length];
 
-            // Configurar dificultad según el nivel solicitado
             let min, max, dificultadText;
             if (currentLevel <= 30) {
                 min = 1; max = 10;
@@ -240,14 +243,12 @@
 
             title.textContent = `Nivel ${currentLevel} (${dificultadText})`;
 
-            // Generar número aleatorio evitando repetir
             do {
                 expectedNumber = Math.floor(Math.random() * (max - min + 1)) + min;
             } while (expectedNumber === lastNumber && (max - min) > 0); 
             lastNumber = expectedNumber;
 
             applesDiv.innerHTML = "";
-            // Ajustar el tamaño si son muchas frutas
             if (expectedNumber > 15) {
                 applesDiv.style.fontSize = "3.2rem";
             } else if (expectedNumber > 10) {
@@ -260,13 +261,12 @@
                 applesDiv.innerHTML += `<span>${frutaActual}</span>`;
             }
 
-            // Crear alternativas (1 correcta, 2 incorrectas)
             let options = [expectedNumber];
             while (options.length < 3) {
-                let variacion = Math.floor(Math.random() * 7) - 3; 
+                let variacion = Math.floor(Math.random() * 5) - 2; 
                 let randomWrong = expectedNumber + variacion;
                 
-                // Asegurar que las opciones falsas estén dentro del rango visualógico de 1 a 25
+                // Aseguramos que las respuestas incorrectas estén dentro de un margen razonable para la pantalla
                 if (randomWrong > 0 && randomWrong <= 25 && !options.includes(randomWrong)) {
                     options.push(randomWrong);
                 }
@@ -336,7 +336,6 @@
             document.getElementById('options-container').appendChild(restartBtn);
         }
 
-        // Arrancar el juego
         initGame();
     </script>
 </body>
