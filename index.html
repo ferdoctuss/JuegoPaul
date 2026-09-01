@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" href="icono3.png">
     <link rel="shortcut icon" href="icono3.png">
     
-    <title>Frutas</title>
+    <title>FRUTAS</title>
     <style>
         body {
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
@@ -350,13 +350,10 @@
         function hablar(texto) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                
-                // Limpiamos los signos de interrogación y emojis para que Android lea fluido "cuántas manzanas a i" o similar
                 let textoLimpio = texto.replace(/[¿?¡!🤔]/g, '');
-
                 let utterance = new SpeechSynthesisUtterance(textoLimpio);
                 utterance.lang = 'es-ES';
-                utterance.rate = 0.85; // Un poquito más pausado para que Android vocalice mejor cada palabra
+                utterance.rate = 0.85;
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -475,11 +472,13 @@
             const buttons = Array.from(optionsDiv.children);
 
             if (selectedNumber === expectedNumber) {
-                messageDiv.textContent = `¡Muy bien Paul! 🎉🚀`;
+                // Visualmente en pantalla solo dice "¡Muy bien!"
+                messageDiv.textContent = `¡Muy bien! 🎉🚀`;
                 messageDiv.style.color = "#1dd1a1";
                 messageDiv.className = "animacion-exito";
                 
-                hablar(`${selectedNumber}, muy bien Paul`);
+                // Auditivamente el navegador dirá el número y "Pol" para que Android lo pronuncie bien
+                hablar(`${selectedNumber}, muy bien Pol`);
 
                 buttons.forEach(btn => btn.disabled = true);
                 
@@ -509,11 +508,11 @@
             document.getElementById('btn-config').style.display = 'none';
             
             const messageDiv = document.getElementById('message');
-            messageDiv.textContent = "¡Eres un campeón contando, Paul!";
+            messageDiv.textContent = "¡Eres un campeón contando!";
             messageDiv.style.color = "#ff9f43";
             messageDiv.className = "animacion-exito";
             
-            hablar("¡Completaste todos los niveles, eres un campeón, Paul!");
+            hablar("¡Completaste todos los niveles, eres un campeón, Pol!");
 
             const restartBtn = document.createElement('button');
             restartBtn.className = "opcion";
